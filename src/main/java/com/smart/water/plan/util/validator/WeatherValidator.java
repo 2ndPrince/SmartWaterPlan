@@ -11,4 +11,11 @@ public class WeatherValidator {
             throw new IllegalArgumentException("Invalid zip code");
         }
     }
+
+    public static void validateLatLon(double lat, double lon) {
+        log.debug("Validating latitude and longitude: {}, {}", lat, lon);
+        if (lat < -90 || lat > 90 || lon < -180 || lon > 180) {
+            throw new IllegalArgumentException("Invalid latitude or longitude");
+        }
+    }
 }
