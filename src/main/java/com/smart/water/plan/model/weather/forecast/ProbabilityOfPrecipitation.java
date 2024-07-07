@@ -2,8 +2,10 @@ package com.smart.water.plan.model.weather.forecast;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class ProbabilityOfPrecipitation {
     @JsonProperty("unitCode")
     private String unitCode;

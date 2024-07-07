@@ -8,9 +8,7 @@ import com.smart.water.plan.util.validator.WeatherValidator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class WeatherService {
@@ -47,6 +45,75 @@ public class WeatherService {
         int periodsWithoutRain = daysWithoutRain * 2;
         WateringUrgency wateringUrgency = WateringUrgency.fromInteger(periodsWithoutRain);
         return waterPlanner.planWhenToWater(forecastPeriods, wateringUrgency, rainThreshold);
+    }
+
+    // TODO: verify and modify this method
+    public List<Integer> getWeatherArray(List<ForecastResponsePeriod> forecastPeriods, int daysWithoutRain, int rainThreshold) {
+        List<Integer> pastWeatherArray = generatePastWeatherArray(daysWithoutRain);
+        List<Integer> futureWeatherArray = generateFutureWeatherArray(forecastPeriods, rainThreshold);
+        List<Integer> probabilityValues = extractProbabilityValues(forecastPeriods);
+        List<Integer> thresholdValues = applyThreshold(probabilityValues, rainThreshold);
+        List<Integer> compressedArray = compressForecastArray(futureWeatherArray);
+        List<Integer> weatherArray = new ArrayList<>();
+        weatherArray.addAll(pastWeatherArray);
+        weatherArray.addAll(thresholdValues);
+        weatherArray.addAll(compressedArray);
+        return weatherArray;
+    }
+
+    public List<Integer> generatePastWeatherArray(int daysWithoutRain) {
+        List<Integer> weatherArray = new ArrayList<>();
+        int index = 6 - daysWithoutRain;
+        for (int i = 0; i < 7; i++) {
+            if (i == index) {
+                weatherArray.add(1);
+            } else {
+                weatherArray.add(0);
+            }
+        }
+        return weatherArray;
+    }
+
+    public List<Integer> generateFutureWeatherArray(List<ForecastResponsePeriod> forecastPeriods, int rainThreshold) {
+        List<Integer> futureWeatherArray = new ArrayList<>();
+        for (ForecastResponsePeriod period : forecastPeriods) {
+            if (period.getProbabilityOfPrecipitation().getValue() > rainThreshold) {
+                futureWeatherArray.add(1);
+            } else {
+                futureWeatherArray.add(0);
+            }
+        }
+        return futureWeatherArray;
+    }
+
+    public List<Integer> extractProbabilityValues(List<ForecastResponsePeriod> forecastPeriods) {
+        List<Integer> probabilityValues = new ArrayList<>();
+        for (ForecastResponsePeriod period : forecastPeriods) {
+            probabilityValues.add(period.getProbabilityOfPrecipitation().getValue());
+        }
+        return probabilityValues;
+    }
+
+    public List<Integer> applyThreshold(List<Integer> probabilityValues, int rainThreshold) {
+        List<Integer> thresholdValues = new ArrayList<>();
+        for (int value : probabilityValues) {
+            if (value >= rainThreshold) {
+                thresholdValues.add(1);
+            } else {
+                thresholdValues.add(0);
+            }
+        }
+        return thresholdValues;
+    }
+
+    public List<Integer> compressForecastArray(List<Integer> futureWeatherArray) {
+        List<Integer> compressedArray = new ArrayList<>();
+        for (int i = 0; i < futureWeatherArray.size(); i += 2) {
+            int first = futureWeatherArray.get(i);
+            int second = futureWeatherArray.get(i + 1);
+            compressedArray.add(first | second);
+        }
+        return compressedArray;
     }
 
     public int getFirstRainingDay(double lat, double lon, int rainThreshold) {

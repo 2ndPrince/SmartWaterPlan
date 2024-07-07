@@ -21,29 +21,60 @@ public class WaterPlannerTest {
     }
 
     @Test
-    public void testPlanWhenToWater() {
-        // Create a mock list of ForecastResponsePeriod
-        ForecastResponsePeriod period1 = Mockito.mock(ForecastResponsePeriod.class);
-        Mockito.when(period1.getProbabilityOfPrecipitation()).thenReturn(new ProbabilityOfPrecipitation("wmoUnit:percent", 50));
-        Mockito.when(period1.getNumber()).thenReturn(1);
+    public void givenImmediateNeedAndRainAboveThreshold_whenPlanningToWater_thenShouldWaterToday() {
+        // Given
+        List<ForecastResponsePeriod> forecastPeriods = setupForecastPeriods(70, 70);
 
-        ForecastResponsePeriod period2 = Mockito.mock(ForecastResponsePeriod.class);
-        Mockito.when(period2.getProbabilityOfPrecipitation()).thenReturn(new ProbabilityOfPrecipitation("wmoUnit:percent",70));
-        Mockito.when(period2.getNumber()).thenReturn(2);
-
-        List<ForecastResponsePeriod> forecastPeriods = Arrays.asList(period1, period2);
-
-        // Test planWhenToWater method
+        // When
         int result = waterPlanner.planWhenToWater(forecastPeriods, WateringUrgency.IMMEDIATE, 60);
-        assertEquals(0, result);
 
-        result = waterPlanner.planWhenToWater(forecastPeriods, WateringUrgency.URGENT, 60);
-        assertEquals(2, result);
+        // Then
+        assertEquals(0, result, "Should water today due to immediate need and rain above threshold.");
+    }
 
-        result = waterPlanner.planWhenToWater(forecastPeriods, WateringUrgency.ON_SCHEDULE, 60);
-        assertEquals(4, result);
+    @Test
+    public void givenUrgentNeedAndRainBelowThreshold_whenPlanningToWater_thenShouldWaterTomorrow() {
+        // Given
+        List<ForecastResponsePeriod> forecastPeriods = setupForecastPeriods(30, 30);
 
-        result = waterPlanner.planWhenToWater(forecastPeriods, WateringUrgency.NO_NEED_TO_WATER, 60);
-        assertEquals(6, result);
+        // When
+        int result = waterPlanner.planWhenToWater(forecastPeriods, WateringUrgency.URGENT, 40);
+
+        // Then
+        assertEquals(2, result, "Should water tomorrow due to urgent need and rain below threshold.");
+    }
+
+    @Test
+    public void givenOnScheduleNeedAndRainExpectedToday_whenPlanningToWater_thenShouldWaterInTwoDays() {
+        // Given
+        List<ForecastResponsePeriod> forecastPeriods = setupForecastPeriods(70, 0);
+
+        // When
+        int result = waterPlanner.planWhenToWater(forecastPeriods, WateringUrgency.ON_SCHEDULE, 60);
+
+        // Then
+        assertEquals(4, result, "Should water in two days due to on-schedule need and rain expected today.");
+    }
+
+    public void givenNoNeedToWaterAndRainExpectedAllDays_whenPlanningToWater_thenNoNeedToWaterInTheNextThreeDays() {
+        // Given
+        List<ForecastResponsePeriod> forecastPeriods = setupForecastPeriods(70, 70, 70);
+
+        // When
+        int result = waterPlanner.planWhenToWater(forecastPeriods, WateringUrgency.NO_NEED_TO_WATER, 60);
+
+        // Then
+        assertEquals(6, result, "No need to water in the next three days due to rain expected all days.");
+    }
+
+    private List<ForecastResponsePeriod> setupForecastPeriods(int... rainProbabilities) {
+        List<ForecastResponsePeriod> forecastPeriods = Arrays.asList(new ForecastResponsePeriod[rainProbabilities.length]);
+        for (int i = 0; i < rainProbabilities.length; i++) {
+            ForecastResponsePeriod period = Mockito.mock(ForecastResponsePeriod.class);
+            Mockito.when(period.getProbabilityOfPrecipitation()).thenReturn(new ProbabilityOfPrecipitation("wmoUnit:percent", rainProbabilities[i]));
+            Mockito.when(period.getNumber()).thenReturn(i + 1);
+            forecastPeriods.set(i, period);
+        }
+        return forecastPeriods;
     }
 }

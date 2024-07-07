@@ -54,4 +54,24 @@ public class WaterPlanner {
     private int returnZeroIfNegative(int value) {
         return Math.max(value, 0);
     }
+
+    // Method to determine if watering is needed
+    public static boolean shouldWater(int[] weatherArray) {
+        int todayIndex = 3; // Index 3 is today
+
+        // Check if it rained today
+        if (weatherArray[todayIndex] == 1) {
+            return false; // No need to water today
+        }
+
+        // Check if it rained in the past 3 days
+        for (int i = todayIndex - 1; i >= todayIndex - 3; i--) {
+            if (weatherArray[i] == 1) {
+                return false; // It rained within the last 3 days, no need to water today
+            }
+        }
+
+        // If no rain in the past 3 days and no rain today, water today
+        return true;
+    }
 }
