@@ -23,4 +23,4 @@ EXPOSE $PORT
 COPY --from=build /build/libs/smart-water-plan-plain.jar /app/
 
 # Command to run the application
-ENTRYPOINT ["java","-Dspring.profiles.active=prod","-jar","/app/app.jar"]
+ENTRYPOINT ["java","-Dspring.profiles.active=prod","-jar","/app/smart-water-plan-plain.jar"]
