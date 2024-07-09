@@ -18,7 +18,7 @@ RUN ./gradlew build -x test
 FROM amazoncorretto:21
 
 # Copy the built JAR from the build stage
-COPY --from=build /workspace/app/build/libs/*.jar /app/app.jar
+COPY --from=build /workspace/app/build/libs/*.jar /app/
 
 # Command to run the application
 ENTRYPOINT ["java","-jar","/app/app.jar"]
