@@ -17,8 +17,10 @@ RUN ./gradlew build -x test
 # Step 2: Prepare the runtime environment using Amazon Corretto JDK 21
 FROM amazoncorretto:21
 
+EXPOSE $PORT
+
 # Copy the built JAR from the build stage
 COPY --from=build /workspace/app/build/libs/*.jar /app/
 
 # Command to run the application
-ENTRYPOINT ["java","-jar","/app/app.jar"]
+ENTRYPOINT ["java","-Dspring.profiles.active=prod","-jar","/app/app.jar"]
