@@ -2,7 +2,7 @@
 FROM amazoncorretto:21 as build
 
 # Set the working directory in the Docker image
-WORKDIR /workspace/app
+WORKDIR /
 
 # Copy the project files into the Docker image
 COPY gradlew .
@@ -17,10 +17,10 @@ RUN ./gradlew build -x test
 # Step 2: Prepare the runtime environment using Amazon Corretto JDK 21
 FROM amazoncorretto:21
 
-EXPOSE 8080
+EXPOSE $PORT
 
 # Copy the built JAR from the build stage
-COPY --from=build /workspace/app/build/libs/*.jar /app/
+COPY --from=build /build/libs/*.jar /app/
 
 # Command to run the application
 ENTRYPOINT ["java","-Dspring.profiles.active=prod","-jar","/app/app.jar"]
