@@ -20,7 +20,7 @@ FROM amazoncorretto:21
 EXPOSE $PORT
 
 # Copy the built JAR from the build stage
-COPY --from=build /build/libs/smart-water-plan-plain.jar /app/
+COPY --from=build /build/libs/*.jar /app/
 
 # Command to run the application
 ENTRYPOINT ["java","-Dspring.profiles.active=prod","-jar","/app/smart-water-plan-plain.jar"]
