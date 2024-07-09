@@ -17,7 +17,7 @@ RUN ./gradlew build -x test
 # Step 2: Prepare the runtime environment using Amazon Corretto JDK 21
 FROM amazoncorretto:21
 
-EXPOSE $PORT
+EXPOSE 8080
 
 # Copy the built JAR from the build stage
 COPY --from=build /workspace/app/build/libs/*.jar /app/
