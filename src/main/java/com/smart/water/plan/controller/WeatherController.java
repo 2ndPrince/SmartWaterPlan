@@ -1,5 +1,6 @@
 package com.smart.water.plan.controller;
 
+import com.smart.water.plan.service.WeatherGeoService;
 import com.smart.water.plan.service.WeatherService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -17,30 +19,26 @@ import java.util.UUID;
 public class WeatherController {
 
     private final WeatherService weatherService;
+    private final WeatherGeoService geoService;
 
     @GetMapping("/test")
     public String test() {
-        return weatherService.gerWeatherByZipCode("12345");
+        return geoService.gerWeatherByZipCode("12345");
     }
 
     @GetMapping("/forecast")
     public String forecast(@RequestParam(value = "lat") double lat, @RequestParam(value = "lon") double lon) {
         log.info("Received request for forecast with latitude: {} and longitude: {}", lat, lon);
-        return weatherService.getForecastUrl(lat, lon);
+        return geoService.getForecastUrl(lat, lon);
     }
 
-    @GetMapping("/watering")
-    public int watering(@RequestParam(value = "lat") double lat, @RequestParam(value = "lon") double lon,
-                        @RequestParam(value = "daysWithoutRain") int daysWithoutRain,
-                        @RequestParam(value = "userId", required = false) UUID userId) {
-        log.info("Received request for watering with latitude: {}, longitude: {} and days without rain: {}", lat, lon, daysWithoutRain);
-        return weatherService.getWateringPeriods(lat, lon, daysWithoutRain, userId);
-    }
-
-    @GetMapping("/firstRainingDay")
-    public int firstRainingDay(@RequestParam(value = "lat") double lat, @RequestParam(value = "lon") double lon,
-                               @RequestParam(value = "threshold", required = false, defaultValue = "60") int threshold) {
-        log.info("Received request for first raining day with latitude: {} and longitude: {}", lat, lon);
-        return weatherService.getFirstRainingDay(lat, lon, threshold);
+    @GetMapping("/water-array")
+    public List<Integer> watering(@RequestParam(value = "lat") double lat, @RequestParam(value = "lon") double lon,
+                                  @RequestParam(value = "daysWithoutRain") int daysWithoutRain,
+                                  @RequestParam(value = "userId", required = true) UUID userId) {
+        log.info("Received request for water array with latitude: {}, longitude: {}, days without rain: {}, and user id: {}", lat, lon, daysWithoutRain, userId);
+        List<Integer> weatherArray = weatherService.getWeatherArray(lat, lon, daysWithoutRain, userId);
+        log.info("Returning water array: {}", weatherArray);
+        return weatherArray;
     }
 }

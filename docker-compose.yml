@@ -1,0 +1,30 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: waterdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: secret
+    ports:
+      - "5432:5432"
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+      - mongo
+  mongo:
+    image: mongo:latest
+#    environment:
+#      MONGO_INITDB_ROOT_USERNAME: mongoUsername
+#      MONGO_INITDB_ROOT_PASSWORD: mongoPassword
+#      MONGO_INITDB_DATABASE: transactiondb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:

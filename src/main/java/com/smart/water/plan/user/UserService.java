@@ -17,6 +17,10 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
+    public int getRainThreshold(UUID id) {
+        return findUserById(id).orElseThrow(() -> new RuntimeException("User not found")).getThreshold();
+    }
+
     // Create
     public User createUser(User user) {
         user.setId(UUID.randomUUID());
