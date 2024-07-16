@@ -3,10 +3,7 @@ package com.smart.water.plan.controller;
 import com.smart.water.plan.user.User;
 import com.smart.water.plan.user.UserService;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @AllArgsConstructor
@@ -18,5 +15,20 @@ public class UserController {
     @PostMapping("/")
     public User createUser(@RequestBody User user) {
         return userService.createUser(user);
+    }
+
+    @GetMapping("/{userId}")
+    public User getUser(@PathVariable String userId) {
+        return userService.getUser(userId);
+    }
+
+    @DeleteMapping("/{userId}")
+    public void deleteUser(@PathVariable String userId) {
+        userService.deleteUser(userId);
+    }
+
+    @PutMapping("/{userId}")
+    public User updateUser(@PathVariable String userId, @RequestBody User user) {
+        return userService.updateUser(userId, user);
     }
 }
