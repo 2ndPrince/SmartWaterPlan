@@ -79,6 +79,10 @@ jobs:
           # github-action-sa@smart-water-plan.iam.gserviceaccount.com
           # github-action-sa@smart-water-plan.iam.gserviceaccount.com
 
+      # Add a step to print the authenticated user's email
+      - name: Print authenticated user's email
+        run: gcloud auth list
+
       - name: Deploy to Cloud Run
         id: deploy
         uses: google-github-actions/deploy-cloudrun@v2
