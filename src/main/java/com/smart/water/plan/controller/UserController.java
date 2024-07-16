@@ -19,18 +19,23 @@ public class UserController {
         return userService.createUser(user);
     }
 
+    @GetMapping("/")
+    public Iterable<User> getAllUsers() {
+        return userService.findAllUsers();
+    }
+
     @GetMapping("/{userId}")
-    public User getUser(@PathVariable String userId) {
-        return userService.getUser(UUID.fromString(userId));
+    public User getUser(@PathVariable("userId") UUID userId) {
+        return userService.getUser(userId);
     }
 
     @DeleteMapping("/{userId}")
-    public void deleteUser(@PathVariable String userId) {
-        userService.deleteUser(UUID.fromString(userId));
+    public void deleteUser(@PathVariable("userId") UUID userId) {
+        userService.deleteUser(userId);
     }
 
     @PutMapping("/{userId}")
-    public User updateUser(@PathVariable String userId, @RequestBody User user) {
-        return userService.updateUser(UUID.fromString(userId), user);
+    public User updateUser(@PathVariable("userId") UUID userId, @RequestBody User user) {
+        return userService.updateUser(userId, user);
     }
 }
