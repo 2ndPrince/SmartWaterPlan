@@ -55,7 +55,7 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
-    public User getUser(String userId) {
-        return findUserById(UUID.fromString(userId)).orElseThrow(() -> new RuntimeException("User not found"));
+    public User getUser(UUID userId) {
+        return findUserById(userId).orElseThrow(() -> new RuntimeException("User not found"));
     }
 }

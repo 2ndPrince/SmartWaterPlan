@@ -5,6 +5,8 @@ import com.smart.water.plan.user.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @AllArgsConstructor
 @RequestMapping("/users")
@@ -18,17 +20,17 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    public User getUser(@PathVariable String userId) {
+    public User getUser(@PathVariable UUID userId) {
         return userService.getUser(userId);
     }
 
     @DeleteMapping("/{userId}")
-    public void deleteUser(@PathVariable String userId) {
+    public void deleteUser(@PathVariable UUID userId) {
         userService.deleteUser(userId);
     }
 
     @PutMapping("/{userId}")
-    public User updateUser(@PathVariable String userId, @RequestBody User user) {
+    public User updateUser(@PathVariable UUID userId, @RequestBody User user) {
         return userService.updateUser(userId, user);
     }
 }
