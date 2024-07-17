@@ -75,8 +75,7 @@ jobs:
           workload_identity_provider: 'projects/499823971950/locations/global/workloadIdentityPools/github-actions-pool/providers/github-provider'
           # projects/499823971950/locations/global/workloadIdentityPools/github-actions-pool/providers/github-provider
 #          service_account: '${{ secrets.WIF_SERVICE_ACCOUNT }}' # e.g. - my-service-account@my-project.iam.gserviceaccount.com
-          service_account: 'github-action-sa@smart-water-plan.iam.gserviceaccount.com'
-          # github-action-sa@smart-water-plan.iam.gserviceaccount.com
+          service_account: 'github2-action-sa@smart-water-plan.iam.gserviceaccount.com'
           # github-action-sa@smart-water-plan.iam.gserviceaccount.com
 
       # Add a step to print the authenticated user's email
@@ -87,10 +86,8 @@ jobs:
         id: deploy
         uses: google-github-actions/deploy-cloudrun@v2
         with:
-#          service: ${{ env.SERVICE }}
-          service: smartwaterplan
-#          region: ${{ env.REGION }}
-#          region: us-central1
+          service: ${{ env.SERVICE }}
+          region: ${{ env.REGION }}
           # NOTE: If required, update to the appropriate source folder
 #          source: ./
           image: us-central1-docker.pkg.dev/smart-water-plan/cloud-run-source-deploy/smartwaterplan/smartwaterplan
