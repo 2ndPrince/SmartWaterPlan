@@ -71,11 +71,12 @@ jobs:
         id: auth
         uses: 'google-github-actions/auth@v2'
         with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
 #          workload_identity_provider: '${{ secrets.WIF_PROVIDER }}' # e.g. - projects/123456789/locations/global/workloadIdentityPools/my-pool/providers/my-provider
-          workload_identity_provider: 'projects/499823971950/locations/global/workloadIdentityPools/github-actions-pool/providers/github-provider'
+#          workload_identity_provider: 'projects/499823971950/locations/global/workloadIdentityPools/github-actions-pool/providers/github-provider'
           # projects/499823971950/locations/global/workloadIdentityPools/github-actions-pool/providers/github-provider
 #          service_account: '${{ secrets.WIF_SERVICE_ACCOUNT }}' # e.g. - my-service-account@my-project.iam.gserviceaccount.com
-          service_account: 'github-action-sa@smart-water-plan.iam.gserviceaccount.com'
+#          service_account: 'github-action-sa@smart-water-plan.iam.gserviceaccount.com'
           # github-action-sa@smart-water-plan.iam.gserviceaccount.com
 
       # Add a step to print the authenticated user's email
