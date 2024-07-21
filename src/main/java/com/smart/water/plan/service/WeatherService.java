@@ -7,6 +7,7 @@ import com.smart.water.plan.user.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -30,6 +31,7 @@ public class WeatherService {
                 .daysWithoutRain(daysWithoutRain)
                 .forecastPeriods(forecastPeriods)
                 .weatherArray(weatherArray)
+                .transactionTime(new Date())
                 .build();
         transactionService.saveTransaction(transaction);
         return weatherArray;
